@@ -1,5 +1,5 @@
 """
-basic_json_consumer_rogers.py
+project_consumer_rogers.py
 
 Read a JSON-formatted file as it is being written. 
 
@@ -22,7 +22,6 @@ from collections import defaultdict  # data structure for counting author occurr
 # IMPORTANT
 # Import Matplotlib.pyplot for live plotting
 import matplotlib.pyplot as plt
-from matplotlib import colors as mcolors
 
 # Import functions from local modules
 from utils.utils_logger import logger
@@ -44,7 +43,7 @@ logger.info(f"Data file: {DATA_FILE}")
 # Set up data structures
 #####################################
 
-author_counts = defaultdict(int)
+#author_counts = defaultdict(int)
 category_counts = defaultdict(int)
 
 #####################################
@@ -52,7 +51,6 @@ category_counts = defaultdict(int)
 #####################################
 
 fig, ax = plt.subplots()
-fig.patch.set_facecolor('silver')
 plt.ion()  # Turn on interactive mode for live updates
 
 #####################################
@@ -69,21 +67,17 @@ def update_chart():
     # Get the authors and counts from the dictionary
     category_list = list(category_counts.keys())
     counts_list = list(category_counts.values())
+    color1 = ["#33ff36, #337dff, #da33ff, #ff333f, #ffbb33, #ff33f0, #33ffe9"]
 
-    color1 = ['red', 'seagreen', 'cornflowerblue', 'deeppink','lightgreen', 'orange','grass']
-    title_font = {'family': 'serif','size': 16,'weight': 'bold'}
-    
 
     # Create a bar chart using the bar() method.
     # Pass in the x list, the y list, and the color
-    #ax.bar(category_list, counts_list, color="green")
-    ax.pie(counts_list, labels=category_list, colors=color1, wedgeprops={'linewidth': 1, 'edgecolor': 'black'}, autopct="%1.1f%%")
-    ax.legend(category_list, title="Categories", loc="upper left", bbox_to_anchor=(1, 0, 0.5, 1))
+    ax.pie(counts_list, category_list, autopct='%1.1f%%', colors=color1, shadow=True, startangle=90)
 
     # Use the built-in axes methods to set the labels and title
     ax.set_xlabel("Category")
-    #ax.set_ylabel("Message Counts")
-    ax.set_title("Category Breakdown", fontdict=title_font)
+    ax.set_ylabel("Category Counts")
+    ax.set_title("Curt's Basic Real-Time Author Message Counts")
 
     # Use the set_xticklabels() method to rotate the x-axis labels
     # Pass in the x list, specify the rotation angle is 45 degrees,
@@ -126,14 +120,17 @@ def process_message(message: str) -> None:
         # Ensure it's a dictionary before accessing fields
         if isinstance(message_dict, dict):
             # Extract the 'author' field from the Python dictionary
-            category = message_dict.get("category", "unknown")
-            logger.info(f"Message received for category: {category}")
+            author = message_dict.get("author", "unknown")
+            category = message_dict.get("category","unknown")
+            logger.info(f"Message received from author: {author}")
+            
 
             # Increment the count for the author
-            category_counts[category] += 1
+            #author_counts[author] += 1
+            #category_counts[category] += 1
 
             # Log the updated counts
-            logger.info(f"Updated author counts: {dict(category_counts)}")
+            #logger.info(f"Updated category counts: {dict(category_counts)}")
 
             # Update the chart
             update_chart()
