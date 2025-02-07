@@ -1,5 +1,5 @@
 """
-basic_json_consumer_rogers.py
+project_consumer_rogers.py
 
 Read a JSON-formatted file as it is being written. 
 
