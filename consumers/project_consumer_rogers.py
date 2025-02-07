@@ -1,5 +1,5 @@
 """
-basic_json_consumer_case.py
+project_consumer_rogers.py
 
 Read a JSON-formatted file as it is being written. 
 
@@ -33,7 +33,7 @@ from utils.utils_logger import logger
 
 PROJECT_ROOT = pathlib.Path(__file__).parent.parent
 DATA_FOLDER = PROJECT_ROOT.joinpath("data")
-DATA_FILE = DATA_FOLDER.joinpath("buzz_live.json")
+DATA_FILE = DATA_FOLDER.joinpath("project_live.json")
 
 logger.info(f"Project root: {PROJECT_ROOT}")
 logger.info(f"Data folder: {DATA_FOLDER}")
@@ -44,6 +44,7 @@ logger.info(f"Data file: {DATA_FILE}")
 #####################################
 
 author_counts = defaultdict(int)
+category_counts = defaultdict(int)
 
 #####################################
 # Set up live visuals
@@ -64,24 +65,25 @@ def update_chart():
     ax.clear()
 
     # Get the authors and counts from the dictionary
-    authors_list = list(author_counts.keys())
-    counts_list = list(author_counts.values())
+    category_list = list(category_counts.keys())
+    counts_list = list(category_counts.values())
+    color1 = ["#33ff36, #337dff, #da33ff, #ff333f, #ffbb33, #ff33f0, #33ffe9"]
 
 
     # Create a bar chart using the bar() method.
     # Pass in the x list, the y list, and the color
-    ax.pie(counts_list, authors_list, autopct='%1.1f%%', shadow=True, startangle=90 )
+    ax.pie(counts_list, category_list, autopct='%1.1f%%', colors=color1, shadow=True, startangle=90)
 
     # Use the built-in axes methods to set the labels and title
-    ax.set_xlabel("Authors")
-    ax.set_ylabel("Message Counts")
+    ax.set_xlabel("Category")
+    ax.set_ylabel("Category Counts")
     ax.set_title("Curt's Basic Real-Time Author Message Counts")
 
     # Use the set_xticklabels() method to rotate the x-axis labels
     # Pass in the x list, specify the rotation angle is 45 degrees,
     # and align them to the right
     # ha stands for horizontal alignment
-    ax.set_xticklabels(authors_list, rotation=45, ha="right")
+    ax.set_xticklabels(category_list, rotation=45, ha="right")
 
     # Use the tight_layout() method to automatically adjust the padding
     plt.tight_layout()
@@ -119,13 +121,16 @@ def process_message(message: str) -> None:
         if isinstance(message_dict, dict):
             # Extract the 'author' field from the Python dictionary
             author = message_dict.get("author", "unknown")
+            category= message_dict.get("category","unknown")
             logger.info(f"Message received from author: {author}")
+            logger.infor(f"{category} received from {author}")
 
             # Increment the count for the author
             author_counts[author] += 1
+            category_counts[category] += 1
 
             # Log the updated counts
-            logger.info(f"Updated author counts: {dict(author_counts)}")
+            logger.info(f"Updated category counts: {dict(category_counts)}")
 
             # Update the chart
             update_chart()
